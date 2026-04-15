@@ -1,31 +1,35 @@
-CREATE DATABASE IF NOT EXISTS reservaesport;
+-- Crear la base de datos
+CREATE DATABASE reservaesport;
+GO
 USE reservaesport;
+GO
 
+-- Tabla de Usuarios
 CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50),
-    email VARCHAR(50) UNIQUE
+    id_usuario INT IDENTITY(1,1) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    fecha_registro DATETIME DEFAULT GETDATE()
 );
 
+-- Tabla de Pistas
 CREATE TABLE pistas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) -- Ejemplo: "Pista de Pádel 1"
+    id_pista INT IDENTITY(1,1) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) DEFAULT 'Pádel', -- Ej: Pádel, Tenis, etc.
+    estado VARCHAR(20) DEFAULT 'Disponible'
 );
 
+-- Tabla de Reservas (Basado en el formulario de la imagen)
 CREATE TABLE reservas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT,
-    id_pista INT,
-    fecha_hora DATETIME,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
-    FOREIGN KEY (id_pista) REFERENCES pistas(id)
+    id_reserva INT IDENTITY(1,1) PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_pista INT NOT NULL,
+    fecha_hora DATETIME NOT NULL,
+    fecha_creacion DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_pista) REFERENCES pistas(id_pista) ON DELETE CASCADE ON UPDATE CASCADE,
+    -- Restricción para evitar que la misma pista se reserve a la misma hora
+    CONSTRAINT pista_fecha_unica UNIQUE (id_pista, fecha_hora)
 );
-
--- Procedimiento almacenado para guardar reserva
-DELIMITER //
-CREATE PROCEDURE sp_guardar_reserva(IN u_id INT, IN p_id INT, IN f_hora DATETIME)
-BEGIN
-    INSERT INTO reservas (id_usuario, id_pista, fecha_hora) 
-    VALUES (u_id, p_id, f_hora);
-END //
-DELIMITER ;
