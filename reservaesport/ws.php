@@ -1,18 +1,144 @@
 <?php
-require_once 'booking/clsBookingManager.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Simulamos recibir datos por POST (de un formulario o fetch)
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $mgr = new clsBookingManager();
+ob_clean();
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
+require_once 'com/utils/dbo/daoConnection.php';
+require_once 'com/utils/dbo/daoCommand.php';
+require_once 'com/utils/mailtools/mail_sender.php';
+require_once 'com/security/clsUserManager.php';
+require_once 'com/utils/dbo/daoManager.php';
+require_once 'com/blockchain/clsTransaction.php';
+require_once 'com/bizum/clsBizum.php';
+
+function newDBCommand($server, $db, $user, $password)
+{
     
-    $u = $_POST['usuario_id'];
-    $p = $_POST['pista_id'];
-    $f = $_POST['fecha']; // Formato YYYY-MM-DD HH:MM:SS
+    $serverConfig = $server . ";Encrypt=yes;TrustServerCertificate=yes";
 
-    if ($mgr->crearNuevaReserva($u, $p, $f)) {
-        echo json_encode(["status" => "success", "message" => "Reserva guardada"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "No se pudo guardar"]);
+    $connection = new DBConnection($serverConfig, $db, $user, $password);
+    $pdoObject = $connection->getPDOObject();
+    
+    
+    if (!$pdoObject) {
+        die("Error: No se pudo conectar a la base de datos. Verifica el host: " . $server);
+    }
+
+    return new DBCommand($pdoObject);
+}
+
+function connUser()
+{
+    $dbCommand = newDBCommand('sqlserver-docker,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
+    return new UserManager($dbCommand);
+}
+
+function connDBManager()
+{
+    $dbCommand = newDBCommand('sqlserver-docker,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
+    return new DBManager($dbCommand);
+}
+
+function connBizum()
+{
+    $dbCommand = newDBCommand('sqlserver-docker,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
+    return new Bizum($dbCommand);
+}
+
+
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+if (empty($action)) {
+    echo "Accion no especificada.";
+} else {
+    switch ($action) {
+      
+        case "register":
+            $username = $_GET['username'];
+            $name = $_GET['name'];
+            $lastname = $_GET['lastname'];
+            $password = $_GET['password'];
+            $email = $_GET['email'];
+            $gender = strtoupper($_GET['gender']);
+            $def_lang = strtoupper($_GET['def_lang']);
+            $userManager = connUser();
+            $userManager->register($username, $name, $lastname, $password, $email, $gender, $def_lang);
+            break;
+        case "login":
+            $userManager = connUser();
+            $userManager->login($_GET['username'], hash('MD5', $_GET['password']));
+            break;
+        case "logout":
+            $userManager = connUser();
+            $userManager->logout($_GET['ssid']);
+            break;
+        case "recoverypassEmail":
+            $userManager = connUser();
+            $userManager->recoverPasswordEmail($_GET['email']);
+            break;
+        case "recoverypassPIN":
+            $userManager = connUser();
+            $userManager->recoverPasswordPIN($_GET['email'], $_GET['pin'], $_GET['password']);
+            break;
+        case "changepass":
+            $userManager = connUser();
+            $userManager->changePassword($_GET['ssid'], hash('MD5', $_GET['password']), $_GET['newpassword']);
+            break;
+        case "viewcon":
+            $dbManager = connDBManager();
+            $dbManager->viewConnections();
+            break;
+        case "viewconhist":
+            $dbManager = connDBManager();
+            $dbManager->viewHistoricConnections();
+            break;
+        case "accvalidate":
+            $userManager = connUser();
+            $userManager->accountValidate($_GET['username'], $_GET['code']);
+            break;
+        case "listusers":
+            $userManager = connUser();
+            $userManager->listusers($_GET['ssid']);
+            break;
+        case "checkpwd":
+            $userManager = connUser();
+            $userManager->checkpwd($_GET['pwd']);
+            break;
+        case "checkuser":
+            $bizum = connBizum();
+            $bizum->checkuser($_GET['ssid'], $_GET['username']);
+            break;
+        case "checkbalance":
+            $bizum = connBizum();
+            $bizum->checkbalance($_GET['ssid']);
+            break;
+        case "checklasttransaction":
+            $bizum = connBizum();
+            $bizum->checkLastTransaction($_GET['ssid']);
+            break;
+        case "getTransactions":
+            $bizum = connBizum();
+            $bizum->getTransactions($_GET['ssid']);
+            break;
+        case "addTransaction":
+            $bizum = connBizum();
+            $bizum->sendBizum($_GET['ssid'], $_GET['receiver'], $_GET['amount']);
+
+            break;
+              case "blockuser":
+            $userManager = connUser();
+            $userManager->blockuser (($_GET['ssid']));
+            break;
+        default:
+            echo "Acción no válida.";
+            break;
     }
 }
+
+
 ?>
