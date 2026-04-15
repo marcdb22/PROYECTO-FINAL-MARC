@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Pistas</title>
+    <!-- Cargamos una fuente moderna (Inter) de Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Variables de color de diseño moderno */
+        :root {
+            --primary: #4F46E5; /* Indigo */
+            --primary-hover: #4338ca;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            /* Fondo con gradiente sutil y bonito */
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+        }
+
+        /* Contenedor central (Estilo Tarjeta / Glassmorphism leve) */
+        .booking-card {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05), 0 4px 6px rgba(0, 0, 0, 0.02);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px); /* Animación muy ligera al dejar el ratón encima */
+        }
+
+        .title {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        /* Efecto al hacer click en el input */
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98); /* Botón se "hunde" levemente al apretar */
+        }
+        
+        #response-message {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .success { color: #10b981; } /* Verde para éxito */
+        .error { color: #ef4444; } /* Rojo para errores */
+    </style>
+</head>
+<body>
+
+    <div class="booking-card">
+        <h2 class="title">Reserva de Pistas</h2>
+        <p class="subtitle">Complete los datos para su reserva</p>
+
+        <form id="booking-form">
+            <div class="form-group">
+                <label for="userId" class="form-label">ID Usuario</label>
+                <input type="number" id="userId" class="form-input" placeholder="Ej: 1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="courtId" class="form-label">ID Pista</label>
+                <input type="number" id="courtId" class="form-input" placeholder="Ej: 3" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateTime" class="form-label">Fecha y Hora</label>
+                <input type="datetime-local" id="dateTime" class="form-input" required>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Reservar ahora</button>
+            <div id="response-message"></div>
+        </form>
+    </div>
+
+    <script>
+        // Manejador del formulario para cuando pulses "Reservar ahora"
+        document.getElementById('booking-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que se recargue la página
+            
+            const btn = document.getElementById('submitBtn');
+            const msg = document.getElementById('response-message');
+            
+            // Animación de espera
+            btn.innerHTML = 'Enviando...';
+            btn.disabled = true;
+            msg.innerHTML = '';
+
+            const userId = document.getElementById('userId').value;
+            const courtId = document.getElementById('courtId').value;
+            const dateTime = document.getElementById('dateTime').value;
+
+            /* 
+              Aquí es donde harías la petición real a tu PHP.
+              Con lo que veo en tu ws.php, se llamaría a la API parecida a esta:
+              const url = `ws.php?action=reservar&username=${userId}&code=${courtId}`;
+              
+              Uso un temporizador (setTimeout) para simular que carga el servidor 
+              así se ve más realista la prueba. 
+            */
+            setTimeout(() => {
+                // Mensaje en consola de la URL final que enviarías
+                console.log(`Simulando envío a: ws.php?action=reservar&username=${userId}&code=${courtId}`);
+                
+                // Mostrar éxito
+                msg.className = 'success';
+                msg.innerHTML = '¡Formulario enviado! Revisa la consola (F12).';
+                
+                // Restaurar botón
+                btn.innerHTML = 'Reservar ahora';
+                btn.disabled = false;
+            }, 600); // 600ms de retraso
+        });
+    </script>
+</body>
+</html>

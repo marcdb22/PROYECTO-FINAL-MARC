@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS reserva_db;
-USE reserva_db;
+CREATE DATABASE IF NOT EXISTS reservaesport;
+USE reservaesport;
 
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,

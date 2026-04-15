@@ -34,19 +34,19 @@ function newDBCommand($server, $db, $user, $password)
 
 function connUser()
 {
-    $dbCommand = newDBCommand('sqlserver-docker,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
+    $dbCommand = newDBCommand('host.docker.internal,1433', 'reservaesport', 'SA', 'Asix1234');
     return new UserManager($dbCommand);
 }
 
 function connDBManager()
 {
-    $dbCommand = newDBCommand('sqlserver-docker,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
+    $dbCommand = newDBCommand('host.docker.internal,1433', 'reservaesport', 'SA', 'Asix1234');
     return new DBManager($dbCommand);
 }
 
 function connBizum()
 {
-    $dbCommand = newDBCommand('sqlserver-docker,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
+    $dbCommand = newDBCommand('host.docker.internal,1433', 'reservaesport', 'SA', 'Asix1234');
     return new Bizum($dbCommand);
 }
 
