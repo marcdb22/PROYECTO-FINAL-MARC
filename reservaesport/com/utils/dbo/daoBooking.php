@@ -1,27 +1,22 @@
 <?php
-require_once 'daoConnection.php';
-
 class daoBooking {
     private $conn;
 
-    public function __construct() {
-        $db = new daoConnection();
-        $this->conn = $db->getConnection();
+    public function __construct($db) {
+        $this->conn = $db;
     }
 
-    public function crearReserva($idPista, $fecha, $hora, $email) {
-        // 1. Comprobar si ya está ocupada
-        $sqlCheck = "SELECT id FROM reservas WHERE id_pista = ? AND fecha = ? AND hora = ?";
-        $stmt = $this->conn->prepare($sqlCheck);
-        $stmt->bind_param("iss", $idPista, $fecha, $hora);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows > 0) return false;
+    public function ejecutarReserva($idUsuario, $idPista, $fechaHora) {
+        // Llamada al Procedure de SQL
+        $query = "CALL sp_guardar_reserva(:u, :p, :f)";
+        $stmt = $this->conn->prepare($query);
+        
+        $stmt->bindParam(":u", $idUsuario);
+        $stmt->bindParam(":p", $idPista);
+        $stmt->bindParam(":f", $fechaHora);
 
-        // 2. Insertar si está libre
-        $sqlInsert = "INSERT INTO reservas (id_pista, fecha, hora, usuario_email) VALUES (?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sqlInsert);
-        $stmt->bind_param("isss", $idPista, $fecha, $hora, $email);
-        return $stmt->execute();
+        if($stmt->execute()) return true;
+        return false;
     }
 }
 ?>
