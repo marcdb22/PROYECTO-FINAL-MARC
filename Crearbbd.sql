@@ -14,3 +14,5 @@ CREATE TABLE reservas (
 
 -- Insertar algunas pistas de ejemplo
 INSERT INTO pistas (nombre) VALUES ('Pista de Pádel 1'), ('Pista de Tenis A');
+
+PRUEBA PARA EL GITHUB
