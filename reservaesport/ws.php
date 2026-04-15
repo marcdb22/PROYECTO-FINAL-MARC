@@ -77,65 +77,21 @@ if (empty($action)) {
             $userManager = connUser();
             $userManager->logout($_GET['ssid']);
             break;
-        case "recoverypassEmail":
-            $userManager = connUser();
-            $userManager->recoverPasswordEmail($_GET['email']);
-            break;
-        case "recoverypassPIN":
-            $userManager = connUser();
-            $userManager->recoverPasswordPIN($_GET['email'], $_GET['pin'], $_GET['password']);
-            break;
-        case "changepass":
-            $userManager = connUser();
-            $userManager->changePassword($_GET['ssid'], hash('MD5', $_GET['password']), $_GET['newpassword']);
-            break;
-        case "viewcon":
-            $dbManager = connDBManager();
-            $dbManager->viewConnections();
-            break;
-        case "viewconhist":
-            $dbManager = connDBManager();
-            $dbManager->viewHistoricConnections();
-            break;
         case "accvalidate":
             $userManager = connUser();
             $userManager->accountValidate($_GET['username'], $_GET['code']);
             break;
-        case "listusers":
-            $userManager = connUser();
-            $userManager->listusers($_GET['ssid']);
+        case "reservar":
+            $userManager = connUser();  
+            $userManager->reservar($_GET['username'], $_GET['code']);
             break;
-        case "checkpwd":
-            $userManager = connUser();
-            $userManager->checkpwd($_GET['pwd']);
+        case "aleta":
+            $userManager = connUser();  
+            $userManager->aleta($_GET['username'], $_GET['code']);
             break;
-        case "checkuser":
-            $bizum = connBizum();
-            $bizum->checkuser($_GET['ssid'], $_GET['username']);
-            break;
-        case "checkbalance":
-            $bizum = connBizum();
-            $bizum->checkbalance($_GET['ssid']);
-            break;
-        case "checklasttransaction":
-            $bizum = connBizum();
-            $bizum->checkLastTransaction($_GET['ssid']);
-            break;
-        case "getTransactions":
-            $bizum = connBizum();
-            $bizum->getTransactions($_GET['ssid']);
-            break;
-        case "addTransaction":
-            $bizum = connBizum();
-            $bizum->sendBizum($_GET['ssid'], $_GET['receiver'], $_GET['amount']);
-
-            break;
-              case "blockuser":
-            $userManager = connUser();
-            $userManager->blockuser (($_GET['ssid']));
-            break;
-        default:
-            echo "Acción no válida.";
+        case "fecha":
+            $userManager = connUser();  
+            $userManager->fecha($_GET['username'], $_GET['code']);
             break;
     }
 }

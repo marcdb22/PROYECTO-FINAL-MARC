@@ -1,12 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Conexión DB</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; background: #eee; }
+        form { background: white; padding: 20px; border-radius: 10px; display: inline-block; }
+        .campo { margin-bottom: 10px; }
+        label { display: block; font-weight: bold; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
 <body>
-    <h2>Reserva de Pistas</h2>
-    <form action="ws.php" method="POST">
-        ID Usuario: <input type="number" name="usuario_id" required><br>
-        ID Pista: <input type="number" name="pista_id" required><br>
-        Fecha y Hora: <input type="datetime-local" name="fecha" required><br>
-        <button type="submit">Reservar ahora</button>
+
+    <h2>Probar Reserva en DB</h2>
+
+    <form action="ws.php" method="GET">
+        
+        <input type="hidden" name="action" value="reservar">
+
+        <div class="campo">
+            <label>Nombre de Usuario (username):</label>
+            <input type="text" name="username" required placeholder="ej: pablo123">
+        </div>
+
+        <div class="campo">
+            <label>Código de Pista o Reserva (code):</label>
+            <input type="text" name="code" required placeholder="ej: PISTA_5">
+        </div>
+
+        <button type="submit">GUARDAR EN BASE DE DATOS</button>
     </form>
+
+    <p><small>Nota: Al pulsar, irás a ws.php?action=reservar&username=...&code=...</small></p>
+
 </body>
-</html>a
+</html>
