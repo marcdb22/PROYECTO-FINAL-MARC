@@ -34,7 +34,7 @@ function newDBCommand($server, $db, $user, $password)
 
 function connUser()
 {
-    $dbCommand = newDBCommand('sqlserver-docker,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
+    $dbCommand = newDBCommand('host.docker.internal,1433', 'PP_DDBB', 'sa', 'MIPASSWORDSEGURA22____333@');
     return new UserManager($dbCommand);
 }
 
