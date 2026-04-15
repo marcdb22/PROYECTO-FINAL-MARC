@@ -136,7 +136,7 @@ class UserManager
         }
     }
 
-public function aleta($ssid)
+public function alerta($ssid)
     {
         if (empty($ssid)) {
             echo "Todos los campos son obligatorios.";
