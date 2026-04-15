@@ -238,28 +238,39 @@ class UserManager
         }
     }
 
-    // public function add_transaction($sender, $receiver, $amount)
-    // {
-    //     if (empty($sender) || empty($receiver) || empty($amount)) {
-    //         echo "Todos los campos son obligatorios.";
-    //     } else {
-    //         try {
-    //             if (!isset($_SESSION["BlockGenesis"])) {
-    //                 $this->dbCommand->execute('AddBlock', array(null));
-    //                 $_SESSION["BlockGenesis"] = true;
-    //                 $_SESSION["id"] = 1;
-    //                 $id = $_SESSION["id"];
-    //             } else {
-    //                 $id = $_SESSION["id"];
-    //             }
-    //             $this->dbCommand->execute('AddTransaction', array($sender, $receiver, $amount, $id));
-    //             $_SESSION["id"]++;
+    public function reservar($ssid)
+    {
+        if (empty($ssid)) {
+            echo "Todos los campos son obligatorios.";
+        } else {
+            try {
+                    $result = $this->dbCommand->execute('sp_reserevar', array ($ssid));
+                    $xml = simplexml_load_string($result);
+                    header('Content-Type: text/xml');
+                    echo $xml->asXML();
+            } catch (PDOException $e) {
+                echo 'Error: ' . $e->getMessage();
+            }
+        }
+    }
 
-    //         } catch (PDOException $e) {
-    //             echo 'Error: ' . $e->getMessage();
-    //         }
-    //     }
-    // }
+    public function reservar($ssid)
+    {
+        if (empty($ssid)) {
+            echo "Todos los campos son obligatorios.";
+        } else {
+            try {
+                    $result = $this->dbCommand->execute('sp_block_user', array ($ssid));
+                    $xml = simplexml_load_string($result);
+                    header('Content-Type: text/xml');
+                    echo $xml->asXML();
+            } catch (PDOException $e) {
+                echo 'Error: ' . $e->getMessage();
+            }
+        }
+    }
+
+
 }
 
 ?>
